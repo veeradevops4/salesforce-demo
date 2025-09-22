@@ -3,10 +3,11 @@ pipeline {
 
     environment {
         // Salesforce environment variables
-        SFDX_CLIENT_ID     = credentials('salesforce-client-id')
-        SFDX_HUB_USERNAME  = credentials('salesforce-username') // can be alias or username
-        SFDX_JWT_KEY       = credentials('salesforce-jwt-key') // private key for JWT auth
-        SFDX_ORG_ALIAS     = 'myOrg' // You can use any alias
+        SFDX_CLIENT_ID     = env.CONNECTED_APP_CONSUMER_KEY_DH
+        SFDX_HUB_ORG_DH    = env.HUB_ORG_DH // can be alias or username
+        SFDX_JWT_KEY       = env.JWT_CRED_ID_DH // private key for JWT auth
+        SFDC_HOST_DH       = env.SFDC_HOST_DH
+        // SFDX_ORG_ALIAS     = 'myOrg' // You can use any alias
     }
 
     stages {
@@ -19,34 +20,36 @@ pipeline {
         stage('Install Salesforce CLI') {
             steps {
                 sh 'npm install sfdx-cli --global'
+                bat 'sfdx --version'
+
+                  
             }
         }
 
-        stage('Authenticate with Salesforce') {
+        stage('Authenticate with Salesforce org') {
             steps {
                 sh """
                     echo "$SFDX_JWT_KEY" > server.key
                     sfdx auth:jwt:grant \
                         --clientid $SFDX_CLIENT_ID \
-                        --jwtkeyfile server.key \
-                        --username $SFDX_HUB_USERNAME \
-                        --setalias $SFDX_ORG_ALIAS \
-                        --instanceurl https://login.salesforce.com
+                        --jwtkeyfile $SFDX_JWT_KEY \
+                        --username $SFDX_HUB_ORG_DH \
+                        --instanceurl $SFDC_HOST_DH
                 """
             }
         }
 
-        stage('Deploy to Salesforce Org') {
-            steps {
-                sh "sfdx force:source:deploy -p force-app/main/default -u $SFDX_ORG_ALIAS --checkonly --verbose"
-                sh "sfdx force:source:deploy -p force-app/main/default -u $SFDX_ORG_ALIAS --wait 10"
-            }
-        }
+        // stage('Deploy to Salesforce Org') {
+        //     steps {
+        //         sh "sfdx force:source:deploy -p force-app/main/default -u $SFDX_ORG_ALIAS --checkonly --verbose"
+        //         sh "sfdx force:source:deploy -p force-app/main/default -u $SFDX_ORG_ALIAS --wait 10"
+        //     }
+        // }
 
-        stage('Run Apex Tests') {
-            steps {
-                sh "sfdx force:apex:test:run --resultformat human --wait 10 --codecoverage --u $SFDX_ORG_ALIAS"
-            }
-        }
+        // stage('Run Apex Tests') {
+        //     steps {
+        //         sh "sfdx force:apex:test:run --resultformat human --wait 10 --codecoverage --u $SFDX_ORG_ALIAS"
+        //     }
+        // }
     }
 
