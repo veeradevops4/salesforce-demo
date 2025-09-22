@@ -33,27 +33,7 @@ pipeline {
                   
             }
         }
-        pipeline {
-    agent any
-
-    environment {
-        SFDX_CLIENT_ID = credentials('SFDX_CLIENT_ID')
-        SFDX_HUB_ORG_DH = credentials('SFDX_HUB_ORG_DH')
-        SFDC_HOST_DH    = credentials('SFDC_HOST_DH')
-    }
-
-    stages {
-        stage('Checkout Source') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Install Salesforce CLI') {
-            steps {
-                sh 'sfdx --version'
-            }
-        }
+        
 
         stage('Authenticate with Salesforce org') {
             steps {
@@ -69,22 +49,24 @@ pipeline {
                 }
             }
         }
+    }
+}
     
 
 
 
-        stage('Authenticate with Salesforce org') {
-            steps {
-                 sh '''
-                    echo "Authenticating to Salesforce..."
-                    sfdx auth:jwt:grant \
-                        --client-id $SFDX_CLIENT_ID \
-                        --jwt-key-file $JWT_KEY_FILE \
-                        --username $SFDX_HUB_ORG_DH \
-                        --instance-url $SFDC_HOST_DH
-                '''
-            }
-        }
+        // stage('Authenticate with Salesforce org') {
+        //     steps {
+        //          sh '''
+        //             echo "Authenticating to Salesforce..."
+        //             sfdx auth:jwt:grant \
+        //                 --client-id $SFDX_CLIENT_ID \
+        //                 --jwt-key-file $JWT_KEY_FILE \
+        //                 --username $SFDX_HUB_ORG_DH \
+        //                 --instance-url $SFDC_HOST_DH
+        //         '''
+        //     }
+        // }
 
         // stage('Deploy to Salesforce Org') {
         //     steps {
@@ -98,6 +80,6 @@ pipeline {
         //         sh "sfdx force:apex:test:run --resultformat human --wait 10 --codecoverage --u $SFDX_ORG_ALIAS"
         //     }
         // }
-    }
-}
+    
+
 
