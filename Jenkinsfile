@@ -2,21 +2,21 @@ pipeline {
     agent any
 
 
-    withCredentials([
-        file(credentialsId: 'SFDX_JWT_KEY', variable: 'JWT_KEY_FILE'),
-        string(credentialsId: 'SFDX_CLIENT_ID', variable: 'SFDX_CLIENT_ID'),
-        string(credentialsId: 'SFDX_HUB_ORG_DH', variable: 'SFDX_HUB_ORG_DH'),
-        string(credentialsId: 'SFDC_HOST_DH', variable: 'SFDC_HOST_DH')
-])
+//     withCredentials([
+//         file(credentialsId: 'SFDX_JWT_KEY', variable: 'JWT_KEY_FILE'),
+//         string(credentialsId: 'SFDX_CLIENT_ID', variable: 'SFDX_CLIENT_ID'),
+//         string(credentialsId: 'SFDX_HUB_ORG_DH', variable: 'SFDX_HUB_ORG_DH'),
+//         string(credentialsId: 'SFDC_HOST_DH', variable: 'SFDC_HOST_DH')
+// ])
 
-    // environment {
-    //     // Salesforce environment variables
-    //     SFDX_CLIENT_ID     = credentials('CONNECTED_APP_CONSUMER_KEY_DH')
-    //     SFDX_HUB_ORG_DH    = credentials('HUB_ORG_DH') // can be alias or username
-    //     SFDX_JWT_KEY       = credentials('JWT_CRED_ID_DH') // private key for JWT auth
-    //     SFDC_HOST_DH       = credentials('SFDC_HOST_DH')
-    //     // SFDX_ORG_ALIAS     = 'myOrg' // You can use any alias
-    // }
+    environment {
+        // Salesforce environment variables
+        SFDX_CLIENT_ID     = credentials('CONNECTED_APP_CONSUMER_KEY_DH')
+        SFDX_HUB_ORG_DH    = credentials('HUB_ORG_DH') // can be alias or username
+        SFDX_JWT_KEY       = credentials('JWT_CRED_ID_DH') // private key for JWT auth
+        SFDC_HOST_DH       = credentials('SFDC_HOST_DH')
+        // SFDX_ORG_ALIAS     = 'myOrg' // You can use any alias
+    }
 
     stages {
         stage('Checkout Source') {
@@ -33,6 +33,45 @@ pipeline {
                   
             }
         }
+        pipeline {
+    agent any
+
+    environment {
+        SFDX_CLIENT_ID = credentials('SFDX_CLIENT_ID')
+        SFDX_HUB_ORG_DH = credentials('SFDX_HUB_ORG_DH')
+        SFDC_HOST_DH    = credentials('SFDC_HOST_DH')
+    }
+
+    stages {
+        stage('Checkout Source') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Install Salesforce CLI') {
+            steps {
+                sh 'sfdx --version'
+            }
+        }
+
+        stage('Authenticate with Salesforce org') {
+            steps {
+                withCredentials([file(credentialsId: 'SFDX_JWT_KEY', variable: 'JWT_KEY_FILE')]) {
+                    sh '''
+                        echo "Authenticating to Salesforce..."
+                        sfdx auth:jwt:grant \
+                            --client-id $SFDX_CLIENT_ID \
+                            --jwt-key-file $JWT_KEY_FILE \
+                            --username $SFDX_HUB_ORG_DH \
+                            --instance-url $SFDC_HOST_DH
+                    '''
+                }
+            }
+        }
+    
+
+
 
         stage('Authenticate with Salesforce org') {
             steps {
