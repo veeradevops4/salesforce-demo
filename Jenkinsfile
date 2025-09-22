@@ -1,14 +1,22 @@
 pipeline {
     agent any
 
-    environment {
-        // Salesforce environment variables
-        SFDX_CLIENT_ID     = credentials('CONNECTED_APP_CONSUMER_KEY_DH')
-        SFDX_HUB_ORG_DH    = credentials('HUB_ORG_DH') // can be alias or username
-        SFDX_JWT_KEY       = credentials('JWT_CRED_ID_DH') // private key for JWT auth
-        SFDC_HOST_DH       = credentials('SFDC_HOST_DH')
-        // SFDX_ORG_ALIAS     = 'myOrg' // You can use any alias
-    }
+
+    withCredentials([
+        file(credentialsId: 'SFDX_JWT_KEY', variable: 'JWT_KEY_FILE'),
+        string(credentialsId: 'SFDX_CLIENT_ID', variable: 'SFDX_CLIENT_ID'),
+        string(credentialsId: 'SFDX_HUB_ORG_DH', variable: 'SFDX_HUB_ORG_DH'),
+        string(credentialsId: 'SFDC_HOST_DH', variable: 'SFDC_HOST_DH')
+])
+
+    // environment {
+    //     // Salesforce environment variables
+    //     SFDX_CLIENT_ID     = credentials('CONNECTED_APP_CONSUMER_KEY_DH')
+    //     SFDX_HUB_ORG_DH    = credentials('HUB_ORG_DH') // can be alias or username
+    //     SFDX_JWT_KEY       = credentials('JWT_CRED_ID_DH') // private key for JWT auth
+    //     SFDC_HOST_DH       = credentials('SFDC_HOST_DH')
+    //     // SFDX_ORG_ALIAS     = 'myOrg' // You can use any alias
+    // }
 
     stages {
         stage('Checkout Source') {
@@ -28,14 +36,14 @@ pipeline {
 
         stage('Authenticate with Salesforce org') {
             steps {
-                sh """
-                    echo "$SFDX_JWT_KEY" > server.key
+                 sh '''
+                    echo "Authenticating to Salesforce..."
                     sfdx auth:jwt:grant \
-                        --clientid $SFDX_CLIENT_ID \
-                        --jwtkeyfile $SFDX_JWT_KEY \
+                        --client-id $SFDX_CLIENT_ID \
+                        --jwt-key-file $JWT_KEY_FILE \
                         --username $SFDX_HUB_ORG_DH \
-                        --instanceurl $SFDC_HOST_DH
-                """
+                        --instance-url $SFDC_HOST_DH
+                '''
             }
         }
 
