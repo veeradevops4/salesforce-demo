@@ -11,9 +11,9 @@ pipeline {
 
     environment {
         // Salesforce environment variables
-        SFDX_CLIENT_ID     = credentials('CONNECTED_APP_CONSUMER_KEY_DH')
-        SFDX_HUB_ORG_DH    = credentials('HUB_ORG_DH') // can be alias or username
-        SFDX_JWT_KEY       = credentials('JWT_CRED_ID_DH') // private key for JWT auth
+        SFDX_CLIENT_ID     = credentials('SFDX_CLIENT_ID')
+        SFDX_HUB_ORG_DH    = credentials('SFDX_HUB_ORG_DH') // can be alias or username
+        SFDX_JWT_KEY       = credentials('SFDX_JWT_KEY') // private key for JWT auth
         SFDC_HOST_DH       = credentials('SFDC_HOST_DH')
         // SFDX_ORG_ALIAS     = 'myOrg' // You can use any alias
     }
@@ -42,7 +42,7 @@ pipeline {
                         echo "Authenticating to Salesforce..."
                         sfdx auth:jwt:grant \
                             --client-id $SFDX_CLIENT_ID \
-                            --jwt-key-file $JWT_KEY_FILE \
+                            --jwt-key-file $SFDX_JWT_KEY \
                             --username $SFDX_HUB_ORG_DH \
                             --instance-url $SFDC_HOST_DH
                     '''
