@@ -3,10 +3,10 @@ pipeline {
 
     environment {
         // Salesforce environment variables
-        SFDX_CLIENT_ID     = env.CONNECTED_APP_CONSUMER_KEY_DH
-        SFDX_HUB_ORG_DH    = env.HUB_ORG_DH // can be alias or username
-        SFDX_JWT_KEY       = env.JWT_CRED_ID_DH // private key for JWT auth
-        SFDC_HOST_DH       = env.SFDC_HOST_DH
+        SFDX_CLIENT_ID     = credentials('CONNECTED_APP_CONSUMER_KEY_DH')
+        SFDX_HUB_ORG_DH    = credentials('HUB_ORG_DH') // can be alias or username
+        SFDX_JWT_KEY       = credentials('JWT_CRED_ID_DH') // private key for JWT auth
+        SFDC_HOST_DH       = credentials('SFDC_HOST_DH')
         // SFDX_ORG_ALIAS     = 'myOrg' // You can use any alias
     }
 
