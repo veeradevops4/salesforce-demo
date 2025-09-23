@@ -55,7 +55,7 @@ pipeline {
             steps {
                 sh '''
                     
-                    ./pmd-bin-7.17.0/bin/pmd.bat pmd check \
+                    ./pmd-bin-6.55.0/bin/run.sh pmd check \
                      -d force-app/main/default/classes \
                      -R apex-ruleset.xml \
                      -f text \
