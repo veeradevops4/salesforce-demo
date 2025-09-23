@@ -29,6 +29,7 @@ pipeline {
             steps {
                 // sh 'npm install sfdx-cli --global'
                 sh 'sfdx --version'
+                sh 'sfdx plugins:install @salesforce/sfdx-scanner'
 
                   
             }
