@@ -53,8 +53,10 @@ pipeline {
 
         stage('Static code analysis-PMD') {
             steps {
+                bat 'echo Current directory: && cd'
+                bat 'dir'
                 bat '''
-                    pmd-bin-6.55.0\\bin\\pmd.bat ^
+                    C:\\pmd-bin-6.55.0\\bin\\pmd.bat ^
                         -language apex ^
                         -d force-app\\main\\default\\classes ^
                         -R apex-ruleset.xml ^
