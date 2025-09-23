@@ -53,12 +53,12 @@ pipeline {
 
         stage('Static code analysis-PMD') {
             steps {
-                sh '''
+                bat '''
                     
-                    pmd-bin-6.55.0/bin/run.sh pmd check \
-                     -d force-app/main/default/classes \
-                     -R apex-ruleset.xml \
-                     -f text \
+                    pmd-bin-6.55.0\\bin\\pmd check ^
+                     -d force-app\\main\\default\\classes ^
+                     -R apex-ruleset.xml ^
+                     -f text ^
                      -r pmd-report.txt
                 '''
             }
