@@ -67,13 +67,13 @@ pipeline {
             }
         }
 
-        stage('package metadata')
+        stage('package metadata') {
             steps {
                 sh '''
                     ls -la
-                     zip -r sfdx-demo.zip force-app/ manifest/ sfdx-project.json
+                    "/c/Program Files/7-Zip/7z.exe" a sfdx-demo.zip ./force-app ./manifest ./sfdx-project.json
                 '''
-            }
+        }
     }
 }
     
