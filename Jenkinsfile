@@ -73,6 +73,7 @@ pipeline {
                     ls -la
                     "/c/Program Files/7-Zip/7z.exe" a sfdx-demo.zip ./force-app ./manifest ./sfdx-project.json
                 '''
+            }
         }
     }
 }
