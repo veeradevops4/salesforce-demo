@@ -15,6 +15,19 @@ pipeline {
         SFDX_HUB_ORG_DH    = credentials('SFDX_HUB_ORG_DH') // can be alias or username
         SFDX_JWT_KEY       = credentials('SFDX_JWT_KEY') // private key for JWT auth
         SFDC_HOST_DH       = credentials('SFDC_HOST_DH')
+        // Your JFrog Artifactory base URL
+        ARTIFACTORY_URL = 'http://localhost:8082/artifactory'
+
+      // The repo in Artifactory where you want to upload
+        ARTIFACTORY_REPO = 'salesforce-generic-local' // e.g., generic-local for generic repos
+      // Jenkins credentials IDs for Artifactory username and password/API key
+        SALESFORCE-GENERIC-TOKEN = credentials('salesforce-generic-token')
+       // Name of the Salesforce metadata ZIP file to upload
+        SF_ZIP = 'sfdx-demo.zip'
+        // Target path inside Artifactory repo (can be empty or a folder path)
+        TARGET_PATH = 'salesforce/'
+
+
         // SFDX_ORG_ALIAS     = 'myOrg' // You can use any alias
     }
 
@@ -73,6 +86,20 @@ pipeline {
                     ls -la
                     "/c/Program Files/7-Zip/7z.exe" a sfdx-demo.zip ./force-app ./manifest ./sfdx-project.json
                 '''
+            }
+        }
+
+        stage('Upload to Artifactory') {
+            steps {
+                script {
+                    def uploadUrl = "${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/${TARGET_PATH}${SF_ZIP}"
+                    echo "Uploading to: ${uploadUrl}"
+
+                    // Use curl to upload file to Artifactory REST API
+                    sh """
+                        curl -u ${SALESFORCE-GENERIC-TOKEN}  -T ${SF_ZIP} "${uploadUrl}"
+                    """
+                }
             }
         }
     }
