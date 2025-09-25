@@ -97,7 +97,7 @@ pipeline {
 
                     // Use curl to upload file to Artifactory REST API
                     sh """
-                        curl -u ${SALESFORCE_GENERIC_TOKEN } -T ${SF_ZIP} "${uploadUrl}"
+                        curl -H "X-JFrog-Art-Api: $SALESFORCE_GENERIC_TOKEN" -T ${SF_ZIP} "${uploadUrl}"
                     """
                 }
             }
