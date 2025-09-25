@@ -21,7 +21,7 @@ pipeline {
       // The repo in Artifactory where you want to upload
         ARTIFACTORY_REPO = 'salesforce-generic-local' // e.g., generic-local for generic repos
       // Jenkins credentials IDs for Artifactory username and password/API key
-        SALESFORCE-GENERIC-TOKEN = 'salesforce-generic-token'
+        SALESFORCE-GENERIC-TOKEN = credentials('jfrog-connection')
        // Name of the Salesforce metadata ZIP file to upload
         SF_ZIP = 'sfdx-demo.zip'
         // Target path inside Artifactory repo (can be empty or a folder path)
@@ -97,7 +97,7 @@ pipeline {
 
                     // Use curl to upload file to Artifactory REST API
                     sh """
-                        curl -u ${SALESFORCE-GENERIC-TOKEN}  -T ${SF_ZIP} "${uploadUrl}"
+                        curl -u ${SALESFORCE-GENERIC-TOKEN_USR}: ${SALESFORCE-GENERIC-TOKEN_PSW} -T ${SF_ZIP} "${uploadUrl}"
                     """
                 }
             }
