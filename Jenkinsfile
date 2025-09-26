@@ -78,7 +78,7 @@ pipeline {
         }
         stage('Archive reports') {
             steps {
-                ArchiveArtifacts artifacts: 'reports/*.html', fingerprint: true
+                archiveArtifacts artifacts: 'reports/*.html', fingerprint: true
             }
         }
 
