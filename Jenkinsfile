@@ -16,16 +16,16 @@ pipeline {
         SFDX_JWT_KEY       = credentials('SFDX_JWT_KEY') // private key for JWT auth
         SFDC_HOST_DH       = credentials('SFDC_HOST_DH')
         // Your JFrog Artifactory base URL
-        ARTIFACTORY_URL = 'http://localhost:8082/artifactory'
+    //     ARTIFACTORY_URL = 'http://localhost:8082/artifactory'
 
-      // The repo in Artifactory where you want to upload
-        ARTIFACTORY_REPO = 'salesforce-generic-local' // e.g., generic-local for generic repos
-      // Jenkins credentials IDs for Artifactory username and password/API key
-        SALESFORCE_GENERIC_TOKEN = credentials('salesforce-generic-token')
-       // Name of the Salesforce metadata ZIP file to upload
-        SF_ZIP = 'sfdx-demo.zip'
-        // Target path inside Artifactory repo (can be empty or a folder path)
-        TARGET_PATH = 'salesforce/'
+    //   // The repo in Artifactory where you want to upload
+    //     ARTIFACTORY_REPO = 'salesforce-generic-local' // e.g., generic-local for generic repos
+    //   // Jenkins credentials IDs for Artifactory username and password/API key
+    //     SALESFORCE_GENERIC_TOKEN = credentials('salesforce-generic-token')
+    //    // Name of the Salesforce metadata ZIP file to upload
+    //     SF_ZIP = 'sfdx-demo.zip'
+    //     // Target path inside Artifactory repo (can be empty or a folder path)
+    //     TARGET_PATH = 'salesforce/'
 
 
         // SFDX_ORG_ALIAS     = 'myOrg' // You can use any alias
@@ -66,42 +66,46 @@ pipeline {
 
         stage('Static code analysis-PMD') {
             steps {
-                bat 'echo Current directory: && cd'
-                bat 'dir'
                 bat '''
+                    mkdir -p reports
                     C:\\pmd-bin-6.55.0\\bin\\pmd.bat ^
-                        -language apex ^
                         -d force-app\\main\\default\\classes ^
-                        -R apex-ruleset.xml ^
+                        -R .\\rulesets\\apex-ruleset.xml  ^
                         -f html ^
-                        -r pmd-report.html
+                        -r .\\reports\\pmd-report.html
                 '''
                
             }
         }
-
-        stage('package metadata') {
+        stage('Publish PMD Report') {
             steps {
-                sh '''
-                    ls -la
-                    "/c/Program Files/7-Zip/7z.exe" a sfdx-demo.zip ./force-app ./manifest ./sfdx-project.json
-                '''
+                // Optional: Requires PMD plugin in Jenkins
+                recordIssues(tools: [pmdParser(pattern: 'reports/pmd-report.html')])
             }
         }
 
-        stage('Upload to Artifactory') {
-            steps {
-                script {
-                    def uploadUrl = "${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/${TARGET_PATH}${SF_ZIP}"
-                    echo "Uploading to: ${uploadUrl}"
+        // stage('package metadata') {
+        //     steps {
+        //         sh '''
+        //             ls -la
+        //             "/c/Program Files/7-Zip/7z.exe" a sfdx-demo.zip ./force-app ./manifest ./sfdx-project.json
+        //         '''
+        //     }
+        // }
 
-                    // Use curl to upload file to Artifactory REST API
-                    sh """
-                        curl -H "X-JFrog-Art-Api: $SALESFORCE_GENERIC_TOKEN" -T ${SF_ZIP} "${uploadUrl}"
-                    """
-                }
-            }
-        }
+        // stage('Upload to Artifactory') {
+        //     steps {
+        //         script {
+        //             def uploadUrl = "${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/${TARGET_PATH}${SF_ZIP}"
+        //             echo "Uploading to: ${uploadUrl}"
+
+        //             // Use curl to upload file to Artifactory REST API
+        //             sh """
+        //                 curl -H "X-JFrog-Art-Api: $SALESFORCE_GENERIC_TOKEN" -T ${SF_ZIP} "${uploadUrl}"
+        //             """
+        //         }
+        //     }
+        // }
     }
 }
     
