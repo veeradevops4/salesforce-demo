@@ -73,8 +73,8 @@ pipeline {
                         -language apex ^
                         -d force-app\\main\\default\\classes ^
                         -R apex-ruleset.xml ^
-                        -f text ^
-                        -r pmd-report.txt
+                        -f html ^
+                        -r pmd-report.html
                 '''
                
             }
