@@ -68,9 +68,8 @@ pipeline {
             steps {
                 // run analysis on all apex classes
                 sh'''
-                mkdir -p reports
                 sfdx scanner:run --target force-app/main/default/classes
-                pmd --format html --outfile reports/pmd-report.html
+                --format html --outfile reports/output-report.html
                 '''
 
                
