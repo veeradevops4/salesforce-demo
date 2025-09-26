@@ -42,6 +42,7 @@ pipeline {
             steps {
                 // sh 'npm install sfdx-cli --global'
                 sh 'sfdx --version'
+                sh 'sfdx plugins:update'
                 sh 'sfdx plugins:install @salesforce/sfdx-scanner'
 
                   
@@ -68,8 +69,7 @@ pipeline {
             steps {
                 // run analysis on all apex classes
                 sh'''
-                sfdx scanner:run --target force-app/main/default/classes
-                --format html --outfile reports/output-report.html
+                sfdx scanner:run --target force-app/main/default/classes --format html --outfile reports/output-report.html
                 '''
 
                
