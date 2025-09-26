@@ -66,25 +66,19 @@ pipeline {
 
         stage('Static code analysis-PMD') {
             steps {
-                bat """
-                    if not exist reports mkdir reports
-                    echo Running PMD...
-                    C:\\pmd-bin-6.55.0\\bin\\pmd.bat ^
-                        -d force-app\\main\\default\\classes ^
-                        -R rulesets\\apex-ruleset.xml ^
-                        -f html ^
-                        -r reports\\pmd-report.html
-                    echo PMD Exit Code: %ERRORLEVEL%
-                    exit /b %ERRORLEVEL%
-                """
+                // run analysis on all apex classes
+                sh'''
+                mkdir -p reports
+                sfdx scanner:run --target force-app/main/default/classes
+                pmd --format html --outfile reports/pmd-report.html
+                '''
 
                
             }
         }
-        stage('Publish PMD Report') {
+        stage('Archive reports') {
             steps {
-                // Optional: Requires PMD plugin in Jenkins
-                recordIssues(tools: [pmdParser(pattern: '.\\reports\\pmd-report.html')])
+                ArchiveArtifacts artifacts: 'reports/*.html', fingerprint: true
             }
         }
 
