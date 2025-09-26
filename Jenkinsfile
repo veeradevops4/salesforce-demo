@@ -66,14 +66,18 @@ pipeline {
 
         stage('Static code analysis-PMD') {
             steps {
-                bat '''
-                    mkdir -p reports
+                bat """
+                    if not exist reports mkdir reports
+                    echo Running PMD...
                     C:\\pmd-bin-6.55.0\\bin\\pmd.bat ^
                         -d force-app\\main\\default\\classes ^
-                        -R .\\rulesets\\apex-ruleset.xml  ^
+                        -R rulesets\\apex-ruleset.xml ^
                         -f html ^
-                        -r .\\reports\\pmd-report.html
-                '''
+                        -r reports\\pmd-report.html
+                    echo PMD Exit Code: %ERRORLEVEL%
+                    exit /b %ERRORLEVEL%
+                """
+
                
             }
         }
