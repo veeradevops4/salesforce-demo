@@ -80,7 +80,7 @@ pipeline {
         stage('Publish PMD Report') {
             steps {
                 // Optional: Requires PMD plugin in Jenkins
-                recordIssues(tools: [pmdParser(pattern: 'reports/pmd-report.html')])
+                recordIssues(tools: [pmdParser(pattern: '.\\reports\\pmd-report.html')])
             }
         }
 
