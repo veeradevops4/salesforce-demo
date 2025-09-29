@@ -44,7 +44,7 @@ pipeline {
                 sh 'sfdx --version'
                 sh 'sfdx plugins:update'
                 sh 'sfdx plugins:install @salesforce/sfdx-scanner'
-                sh 'jfrog --version'
+                sh 'curl -o jfrog.exe -fL https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/jfrog.exe'
 
                   
             }
