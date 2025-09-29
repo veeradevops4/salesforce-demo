@@ -102,11 +102,11 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'artifactory-creds', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASS')]) {
                     sh '''
-                        jfrog config add art-server --url=$ARTIFACTORY_URL --user=$ART_USER --password=$ART_PASS --interactive=false --enc-password=false
+                        jfrog config add art-server --url=$ARTIFACTORY_URL --user=$ART_USER --password=$ART_PASS --interactive=false --enc-password=false --overwrite
                         jfrog rt u "${REPORT_FILE}" "${ARTIFACTORY_REPO}/${REPORT_FILE}" --server-id=art-server
                     '''
                 }
-            }
+            } 
         }
 
         // stage('upload report to artifactory') {
