@@ -81,11 +81,37 @@ pipeline {
             }
         }
 
-        // stage('package metadata') {
+        stage('upload report to artifactory') {
+            steps {
+                script {
+                    // get a reference to the  configured artifactory server
+                    def server = Artifactory.server 'Artifactory'
+
+                    // define the upload specification
+                    def uploadSpec = """{
+                        "files": [
+                            { 
+                               "pattern": "output-report.html",
+                               "target": "cicd-generic-local/reports/${env.BUILD.NUMBER}/"
+
+                        
+                            }
+                        
+                        ]
+                    }"""
+
+                    //upload the output-report.html file
+                    server.upload(uploadSpec)
+                }
+            }
+        }
+
+        // stage('Convert and Zip') {
         //     steps {
         //         sh '''
         //             ls -la
-        //             "/c/Program Files/7-Zip/7z.exe" a sfdx-demo.zip ./force-app ./manifest ./sfdx-project.json
+        //             "/c/Program Files/7-Zip/7z.exe" a deploy.zip ./reports 
+                    // ls -ltr
         //         '''
         //     }
         // }
