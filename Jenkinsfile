@@ -86,14 +86,14 @@ pipeline {
                 script {
                     // get a reference to the  configured artifactory server
                     def server = Artifactory.server 'Artifactory'
-                    def buildNumber = currentBuild.rawBuild.NUMBER
+                    def buildNumber = currentBuild.number
 
                     // define the upload specification
                     def uploadSpec = """{
                         "files": [
                             { 
                                "pattern": "output-report.html",
-                               "target": "cicd-generic-local/reports/${env.BUILD.NUMBER}/"
+                               "target": "cicd-generic-local/reports/${buildNumber}/"
 
                         
                             }
