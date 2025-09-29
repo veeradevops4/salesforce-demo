@@ -25,7 +25,7 @@ pipeline {
        // Name of the Salesforce metadata ZIP file to upload
         REPORT_FILE = 'reports/output-report.html'
         // Target path inside Artifactory repo (can be empty or a folder path)
-        TARGET_PATH = 'salesforce/'
+        // TARGET_PATH = 'salesforce/'
 
 
         // SFDX_ORG_ALIAS     = 'myOrg' // You can use any alias
@@ -120,7 +120,7 @@ pipeline {
         stage('Upload to Artifactory') {
             steps {
                 script {
-                    def uploadUrl = "${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/${TARGET_PATH}/${REPORT_FILE}"
+                    def uploadUrl = "${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/${REPORT_FILE}"
                     echo "Uploading to: ${uploadUrl}"
 
                     // Use curl to upload file to Artifactory REST API
