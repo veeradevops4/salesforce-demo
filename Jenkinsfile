@@ -15,17 +15,17 @@ pipeline {
         SFDX_HUB_ORG_DH    = credentials('SFDX_HUB_ORG_DH') // can be alias or username
         SFDX_JWT_KEY       = credentials('SFDX_JWT_KEY') // private key for JWT auth
         SFDC_HOST_DH       = credentials('SFDC_HOST_DH')
-        // Your JFrog Artifactory base URL
-    //     ARTIFACTORY_URL = 'http://localhost:8082/artifactory'
+        Your JFrog Artifactory base URL
+        ARTIFACTORY_URL = 'http://localhost:8082/'
 
-    //   // The repo in Artifactory where you want to upload
-    //     ARTIFACTORY_REPO = 'salesforce-generic-local' // e.g., generic-local for generic repos
-    //   // Jenkins credentials IDs for Artifactory username and password/API key
-    //     SALESFORCE_GENERIC_TOKEN = credentials('salesforce-generic-token')
-    //    // Name of the Salesforce metadata ZIP file to upload
-    //     SF_ZIP = 'sfdx-demo.zip'
-    //     // Target path inside Artifactory repo (can be empty or a folder path)
-    //     TARGET_PATH = 'salesforce/'
+      // The repo in Artifactory where you want to upload
+        ARTIFACTORY_REPO = 'salesforce-generic-local' // e.g., generic-local for generic repos
+      // Jenkins credentials IDs for Artifactory username and password/API key
+        SALESFORCE_GENERIC_TOKEN = credentials('salesforce-generic-token')
+       // Name of the Salesforce metadata ZIP file to upload
+        DEPLOY = 'output-report.html'
+        // Target path inside Artifactory repo (can be empty or a folder path)
+        TARGET_PATH = 'salesforce/'
 
 
         // SFDX_ORG_ALIAS     = 'myOrg' // You can use any alias
@@ -81,31 +81,31 @@ pipeline {
             }
         }
 
-        stage('upload report to artifactory') {
-            steps {
-                script {
-                    // get a reference to the  configured artifactory server
-                    def server = Artifactory.server 'Artifactory'
-                    def buildNumber = currentBuild.number
+        // stage('upload report to artifactory') {
+        //     steps {
+        //         script {
+        //             // get a reference to the  configured artifactory server
+        //             def server = Artifactory.server 'Artifactory'
+        //             def buildNumber = currentBuild.number
 
-                    // define the upload specification
-                    def uploadSpec = """{
-                        "files": [
-                            { 
-                               "pattern": "output-report.html",
-                               "target": "cicd-generic-local/reports/${buildNumber}/"
+        //             // define the upload specification
+        //             def uploadSpec = """{
+        //                 "files": [
+        //                     { 
+        //                        "pattern": "output-report.html",
+        //                        "target": "cicd-generic-local/reports/${buildNumber}/"
 
                         
-                            }
+        //                     }
                         
-                        ]
-                    }"""
+        //                 ]
+        //             }"""
 
-                    //upload the output-report.html file
-                    server.upload(uploadSpec)
-                }
-            }
-        }
+        //             //upload the output-report.html file
+        //             server.upload(uploadSpec)
+        //         }
+        //     }
+        // }
 
         // stage('Convert and Zip') {
         //     steps {
@@ -117,19 +117,19 @@ pipeline {
         //     }
         // }
 
-        // stage('Upload to Artifactory') {
-        //     steps {
-        //         script {
-        //             def uploadUrl = "${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/${TARGET_PATH}${SF_ZIP}"
-        //             echo "Uploading to: ${uploadUrl}"
+        stage('Upload to Artifactory') {
+            steps {
+                script {
+                    def uploadUrl = "${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/${TARGET_PATH}${DEPLOY}"
+                    echo "Uploading to: ${uploadUrl}"
 
-        //             // Use curl to upload file to Artifactory REST API
-        //             sh """
-        //                 curl -H "X-JFrog-Art-Api: $SALESFORCE_GENERIC_TOKEN" -T ${SF_ZIP} "${uploadUrl}"
-        //             """
-        //         }
-        //     }
-        // }
+                    // Use curl to upload file to Artifactory REST API
+                    sh """
+                        curl -H "X-JFrog-Art-Api: $SALESFORCE_GENERIC_TOKEN" -T ${DEPLOY} "${uploadUrl}"
+                    """
+                }
+            }
+        }
     }
 }
     
