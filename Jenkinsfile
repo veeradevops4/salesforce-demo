@@ -23,7 +23,7 @@ pipeline {
       // Jenkins credentials IDs for Artifactory username and password/API key
         // SALESFORCE_GENERIC_TOKEN = credentials('salesforce-generic-token')
        // Name of the Salesforce metadata ZIP file to upload
-        REPORT_FILE = 'reports/output-report.html'
+        REPORT_FILE = 'reports/output-report.html'  
         // Target path inside Artifactory repo (can be empty or a folder path)
         // TARGET_PATH = 'salesforce/'
 
@@ -84,10 +84,10 @@ pipeline {
         stage('Upload to Artifactory') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'artifactory-creds', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASS')]) {
-                    sh """
-                        jfrog rt config --url=${ARTIFACTORY_URL} --user=$ART_USER --password=$ART_PASS --interactive=false --server-id=art-server
+                    sh '''
+                        jfrog config add art-server --url=$ARTIFACTORY_URL --user=$ART_USER --password=$ART_PASS --interactive=false
                         jfrog rt u "${REPORT_FILE}" "${ARTIFACTORY_REPO}/${REPORT_FILE}" --server-id=art-server
-                    """
+                    '''
                 }
             }
         }
