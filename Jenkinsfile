@@ -16,7 +16,7 @@ pipeline {
         SFDX_JWT_KEY       = credentials('SFDX_JWT_KEY') // private key for JWT auth
         SFDC_HOST_DH       = credentials('SFDC_HOST_DH')
         // Your JFrog Artifactory base URL
-        ARTIFACTORY_URL = 'http://localhost:8082/artifactory'
+        ARTIFACTORY_URL = 'http://localhost:8082'
 
       // The repo in Artifactory where you want to upload
         ARTIFACTORY_REPO = 'salesforce-generic-local' // e.g., generic-local for generic repos
