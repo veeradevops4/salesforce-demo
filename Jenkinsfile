@@ -83,7 +83,8 @@ pipeline {
         stage('Install JFrog CLI') {
             steps {
                 bat '''
-                curl -o jfrog.exe -fL https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/latest/jfrog-cli-windows-amd64/jfrog.exe
+                curl -o jfrog.exe -fL https://releases.jfrog.io/artifactory/jfrog-cli/v2/2.55.1/jfrog-cli-windows-amd64/jfrog.exe
+
                 '''
             }
         }
