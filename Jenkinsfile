@@ -44,8 +44,6 @@ pipeline {
                 sh 'sfdx --version'
                 sh 'sfdx plugins:update'
                 sh 'sfdx plugins:install @salesforce/sfdx-scanner'
-                sh 'curl -o jfrog.exe -fL https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/jfrog.exe'
-
                   
             }
         }
@@ -79,6 +77,14 @@ pipeline {
         stage('Archive reports') {
             steps {
                 archiveArtifacts artifacts: 'reports/*.html', fingerprint: true
+            }
+        }
+
+        stage('Install JFrog CLI') {
+            steps {
+                bat '''
+                curl -o jfrog.exe -fL https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/latest/jfrog-cli-windows-amd64/jfrog.exe
+                '''
             }
         }
 
