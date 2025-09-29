@@ -120,13 +120,15 @@ pipeline {
         stage('Upload to Artifactory') {
             steps {
                 script {
-                    def uploadUrl = "${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/${TARGET_PATH}${REPORT_FILE}"
+                    def uploadUrl = "${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/${TARGET_PATH}/${REPORT_FILE}"
                     echo "Uploading to: ${uploadUrl}"
 
                     // Use curl to upload file to Artifactory REST API
-                    sh """
-                        curl -H "X-JFrog-Art-Api: $SALESFORCE_GENERIC_TOKEN" -T ${REPORT_FILE} "${uploadUrl}"
-                    """
+                     sh '''
+                            curl -fL -H "X-JFrog-Art-Api: $SALESFORCE_GENERIC_TOKEN" \
+                                 -T output-report.html \
+                                 ''' + uploadUrl + '''
+                        '''
                 }
             }
         }
