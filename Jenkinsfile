@@ -16,14 +16,14 @@ pipeline {
         SFDX_JWT_KEY       = credentials('SFDX_JWT_KEY') // private key for JWT auth
         SFDC_HOST_DH       = credentials('SFDC_HOST_DH')
         Your JFrog Artifactory base URL
-        ARTIFACTORY_URL = 'http://localhost:8082/'
+        ARTIFACTORY_URL = 'http://localhost:8082/artifactory'
 
       // The repo in Artifactory where you want to upload
         ARTIFACTORY_REPO = 'salesforce-generic-local' // e.g., generic-local for generic repos
       // Jenkins credentials IDs for Artifactory username and password/API key
         SALESFORCE_GENERIC_TOKEN = credentials('salesforce-generic-token')
        // Name of the Salesforce metadata ZIP file to upload
-        DEPLOY = 'output-report.html'
+        REPORT_FILE = 'output-report.html'
         // Target path inside Artifactory repo (can be empty or a folder path)
         TARGET_PATH = 'salesforce/'
 
@@ -120,12 +120,12 @@ pipeline {
         stage('Upload to Artifactory') {
             steps {
                 script {
-                    def uploadUrl = "${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/${TARGET_PATH}${DEPLOY}"
+                    def uploadUrl = "${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/${TARGET_PATH}${REPORT_FILE}"
                     echo "Uploading to: ${uploadUrl}"
 
                     // Use curl to upload file to Artifactory REST API
                     sh """
-                        curl -H "X-JFrog-Art-Api: $SALESFORCE_GENERIC_TOKEN" -T ${DEPLOY} "${uploadUrl}"
+                        curl -H "X-JFrog-Art-Api: $SALESFORCE_GENERIC_TOKEN" -T ${REPORT_FILE} "${uploadUrl}"
                     """
                 }
             }
