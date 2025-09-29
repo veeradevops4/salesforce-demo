@@ -23,7 +23,7 @@ pipeline {
       // Jenkins credentials IDs for Artifactory username and password/API key
         SALESFORCE_GENERIC_TOKEN = credentials('salesforce-generic-token')
        // Name of the Salesforce metadata ZIP file to upload
-        REPORT_FILE = 'output-report.html'
+        REPORT_FILE = 'reports/output-report.html'
         // Target path inside Artifactory repo (can be empty or a folder path)
         TARGET_PATH = 'salesforce/'
 
@@ -126,7 +126,7 @@ pipeline {
                     // Use curl to upload file to Artifactory REST API
                      sh '''
                             curl -fL -H "X-JFrog-Art-Api: $SALESFORCE_GENERIC_TOKEN" \
-                                 -T output-report.html \
+                                 -T reports/output-report.html \
                                  ''' + uploadUrl + '''
                         '''
                 }
