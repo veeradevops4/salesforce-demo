@@ -21,7 +21,7 @@ pipeline {
       // The repo in Artifactory where you want to upload
         ARTIFACTORY_REPO = 'salesforce-generic-local' // e.g., generic-local for generic repos
       // Jenkins credentials IDs for Artifactory username and password/API key
-        SALESFORCE_GENERIC_TOKEN = credentials('salesforce-generic-token')
+        // SALESFORCE_GENERIC_TOKEN = credentials('salesforce-generic-token')
        // Name of the Salesforce metadata ZIP file to upload
         REPORT_FILE = 'reports/output-report.html'
         // Target path inside Artifactory repo (can be empty or a folder path)
@@ -81,6 +81,17 @@ pipeline {
             }
         }
 
+        stage('Upload to Artifactory') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'artifactory-creds', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASS')]) {
+                    sh """
+                        jfrog rt config --url=${ARTIFACTORY_URL} --user=$ART_USER --password=$ART_PASS --interactive=false --server-id=art-server
+                        jfrog rt u "${REPORT_FILE}" "${ARTIFACTORY_REPO}/${REPORT_FILE}" --server-id=art-server
+                    """
+                }
+            }
+        }
+
         // stage('upload report to artifactory') {
         //     steps {
         //         script {
@@ -117,21 +128,21 @@ pipeline {
         //     }
         // }
 
-        stage('Upload to Artifactory') {
-            steps {
-                script {
-                    def uploadUrl = "${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/${REPORT_FILE}"
-                    echo "Uploading to: ${uploadUrl}"
+        // stage('Upload to Artifactory') {
+        //     steps {
+        //         script {
+        //             def uploadUrl = "${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}/${REPORT_FILE}"
+        //             echo "Uploading to: ${uploadUrl}"
 
-                    // Use curl to upload file to Artifactory REST API
-                     sh '''
-                            curl -fL -H "X-JFrog-Art-Api: $SALESFORCE_GENERIC_TOKEN" \
-                                 -T reports/output-report.html \
-                                 ''' + uploadUrl + '''
-                        '''
-                }
-            }
-        }
+        //             // Use curl to upload file to Artifactory REST API
+        //              sh '''
+        //                     curl -fL -H "X-JFrog-Art-Api: $SALESFORCE_GENERIC_TOKEN" \
+        //                          -T reports/output-report.html \
+        //                          ''' + uploadUrl + '''
+        //                 '''
+        //         }
+        //     }
+        // }
     }
 }
     
