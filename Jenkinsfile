@@ -86,6 +86,7 @@ pipeline {
                 script {
                     // get a reference to the  configured artifactory server
                     def server = Artifactory.server 'Artifactory'
+                    def buildNumber = currentBuild.rawBuild.NUMBER
 
                     // define the upload specification
                     def uploadSpec = """{
