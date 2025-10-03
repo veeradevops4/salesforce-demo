@@ -15,7 +15,7 @@ pipeline {
         SFDX_HUB_ORG_DH    = credentials('SFDX_HUB_ORG_DH') // can be alias or username
         SFDX_JWT_KEY       = credentials('SFDX_JWT_KEY') // private key for JWT auth
         SFDC_HOST_DH       = credentials('SFDC_HOST_DH')
-        // Your JFrog Artifactory base URL
+    //     Your JFrog Artifactory base URL
     //     ARTIFACTORY_URL = 'http://localhost:8082'
 
     //   // The repo in Artifactory where you want to upload
@@ -26,7 +26,7 @@ pipeline {
     //     REPORT_FILE = 'reports/output-report.html'  
         // Target path inside Artifactory repo (can be empty or a folder path)
         // TARGET_PATH = 'salesforce/'
-        NEXUS_URL = 'http://54.91.45.21:8081/repository/sfdx/'
+        NEXUS_URL = 'http://3.88.201.199:8081/repository/sfdx/'
         NEXUS_CREDENTIALS = credentials('nexus-creds') // Jenkins credentials ID
 
 
