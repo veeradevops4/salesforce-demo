@@ -27,7 +27,7 @@ pipeline {
         // Target path inside Artifactory repo (can be empty or a folder path)
         // TARGET_PATH = 'salesforce/'
         NEXUS_URL = 'http://3.88.201.199:8081/repository/sfdx/'
-        NEXUS_CREDENTIALS = credentials('nexus-creds') // Jenkins credentials ID
+        NEXUS_CREDENTIALS = credentials('nexus-creads') // Jenkins credentials ID
 
 
         // SFDX_ORG_ALIAS     = 'myOrg' // You can use any alias
