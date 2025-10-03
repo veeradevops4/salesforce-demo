@@ -26,7 +26,7 @@ pipeline {
     //     REPORT_FILE = 'reports/output-report.html'  
         // Target path inside Artifactory repo (can be empty or a folder path)
         // TARGET_PATH = 'salesforce/'
-        NEXUS_URL = 'http://54.234.111.22:8081/repository/sfdx/'
+        NEXUS_URL = 'http://54.91.45.21:8081/repository/salesforce/'
         NEXUS_CREDENTIALS = credentials('nexus-creds') // Jenkins credentials ID
 
 
@@ -100,7 +100,7 @@ pipeline {
         //     }
         // }
 
-        // stage('Upload to Artifactory') {
+        // stage('Upload to Jfrog') {
         //     steps {
         //         withCredentials([usernamePassword(credentialsId: 'artifactory-creds', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASS')]) {
         //             sh '''
