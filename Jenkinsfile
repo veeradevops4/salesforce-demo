@@ -16,18 +16,18 @@ pipeline {
         SFDX_JWT_KEY       = credentials('SFDX_JWT_KEY') // private key for JWT auth
         SFDC_HOST_DH       = credentials('SFDC_HOST_DH')
     //     Your JFrog Artifactory base URL
-        ARTIFACTORY_URL = 'http://localhost:8082'
+    //     ARTIFACTORY_URL = 'http://localhost:8082'
 
-      // The repo in Artifactory where you want to upload
-        ARTIFACTORY_REPO = 'salesforce-generic-local' // e.g., generic-local for generic repos
-      // Jenkins credentials IDs for Artifactory username and password/API key
-        // SALESFORCE_GENERIC_TOKEN = credentials('salesforce-generic-token')
-       // Name of the Salesforce metadata ZIP file to upload
-        REPORT_FILE = 'reports/output-report.html'  
+    //   // The repo in Artifactory where you want to upload
+    //     ARTIFACTORY_REPO = 'salesforce-generic-local' // e.g., generic-local for generic repos
+    //   // Jenkins credentials IDs for Artifactory username and password/API key
+    //     // SALESFORCE_GENERIC_TOKEN = credentials('salesforce-generic-token')
+    //    // Name of the Salesforce metadata ZIP file to upload
+    //     REPORT_FILE = 'reports/output-report.html'  
         // Target path inside Artifactory repo (can be empty or a folder path)
         // TARGET_PATH = 'salesforce/'
-        // NEXUS_URL = 'http://3.93.191.133:8081/repository/sfdx/'
-        // NEXUS_CREDENTIALS = credentials('nexus-creads') // Jenkins credentials ID
+        NEXUS_URL = 'http://34.224.221.39:8081/repository/salesforce/'
+        NEXUS_CREDENTIALS = credentials('nexus-creads') // Jenkins credentials ID
 
 
         // SFDX_ORG_ALIAS     = 'myOrg' // You can use any alias
@@ -100,31 +100,31 @@ pipeline {
         //     }
         // }
 
-        stage('Upload to Jfrog') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'artifactory-creds', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASS')]) {
-                    sh '''
-                        jfrog config add art-server --url=$ARTIFACTORY_URL --user=$ART_USER --password=$ART_PASS --interactive=false --enc-password=false --overwrite=true
-                        jfrog rt u "${REPORT_FILE}" "${ARTIFACTORY_REPO}/${REPORT_FILE}" --server-id=art-server
-                    '''
-                }
-            } 
-        }
-
-        // stage('Upload to Nexus') {
+        // stage('Upload to Jfrog') {
         //     steps {
-        //         script {
-        //             def fileName = "reports/output-report.html"
-        //             def uploadUrl = "${NEXUS_URL}${fileName}"
-                    
-        //             sh """
-        //                 curl -u ${NEXUS_CREDENTIALS_USR}:${NEXUS_CREDENTIALS_PSW} \
-        //                      --upload-file ${fileName} \
-        //                      ${uploadUrl}
-        //             """
+        //         withCredentials([usernamePassword(credentialsId: 'artifactory-creds', usernameVariable: 'ART_USER', passwordVariable: 'ART_PASS')]) {
+        //             sh '''
+        //                 jfrog config add art-server --url=$ARTIFACTORY_URL --user=$ART_USER --password=$ART_PASS --interactive=false --enc-password=false --overwrite=true
+        //                 jfrog rt u "${REPORT_FILE}" "${ARTIFACTORY_REPO}/${REPORT_FILE}" --server-id=art-server
+        //             '''
         //         }
-        //     }
+        //     } 
         // }
+
+        stage('Upload to Nexus') {
+            steps {
+                script {
+                    def fileName = "reports/output-report.html"
+                    def uploadUrl = "${NEXUS_URL}${fileName}"
+                    
+                    sh """
+                        curl -u ${NEXUS_CREDENTIALS_USR}:${NEXUS_CREDENTIALS_PSW} \
+                             --upload-file ${fileName} \
+                             ${uploadUrl}
+                    """
+                }
+            }
+        }
         // stage('upload report to artifactory') {
         //     steps {
         //         script {
