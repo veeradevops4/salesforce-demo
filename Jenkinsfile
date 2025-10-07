@@ -26,7 +26,7 @@ pipeline {
     //     REPORT_FILE = 'reports/output-report.html'  
         // Target path inside Artifactory repo (can be empty or a folder path)
         // TARGET_PATH = 'salesforce/'
-        NEXUS_URL = 'http://34.224.221.39:8081/repository/salesforce/'
+        NEXUS_URL = 'http://54.87.122.121:8081/repository/sfdx/'
         NEXUS_CREDENTIALS = credentials('nexus-creads') // Jenkins credentials ID
 
 
